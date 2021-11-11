@@ -1,0 +1,1 @@
+This folder is "Data access object". this is interface and implementing of that interface

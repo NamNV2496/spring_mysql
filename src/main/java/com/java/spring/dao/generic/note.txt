@@ -1,0 +1,2 @@
+this is a folder to create a generic interface.
+if have more than 2 interface has the same method. we can define a generic interface at here and extends at subinterface
