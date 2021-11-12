@@ -1,15 +1,13 @@
 package com.java.spring.dao.generic;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import java.util.List;
 
 public interface IGenericDAO<T> {
-    public List<T> list();
-    public T get(int t);
-
-    public void save(T t);
-
-    public void update(T t);
-
-    public void delete(T t);
+    <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters);
+    void update (String sql, Object... parameters);
+    int insert (String sql, Object... parameters);
+    int count(String sql, Object... parameters);
 
 }

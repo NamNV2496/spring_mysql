@@ -16,7 +16,6 @@ public class userMapper implements RowMapper<userModel> {
             usrModel.setName(rs.getString("name"));
             usrModel.setEmail(rs.getString("email"));
             usrModel.setPhone(rs.getString("phone"));
-            System.out.println("Mapper done");
             return usrModel;
         }catch (SQLException e) {
             System.out.println("Mapper fail");
