@@ -5,6 +5,8 @@ import com.java.spring.mapper.userMapper;
 import com.java.spring.model.userModel;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -13,17 +15,28 @@ public class userDAO extends abstractDAO<userModel> implements IUserDAO {
     @Override
     public List<userModel> findAll() {
         String sql = "SELECT * FROM user";
-        return query(sql, new userMapper());
+        List<Object> list = new ArrayList<>();
+        return query(sql, new userMapper(), list);
     }
 
     public int insert(userModel usr) {
         String sql = "insert into user (id, name, email, phone) values (?, ?, ?, ?)";
-        return insert(sql, new Object[]{usr.getId()}, new Object[]{usr.getName()}, new Object[]{usr.getEmail()}, new Object[]{usr.getPhone()});
+        List<Object> list = new ArrayList<>();
+        list.add(usr.getId());
+        list.add(usr.getName());
+        list.add(usr.getEmail());
+        list.add(usr.getPhone());
+        return insert(sql, list);
     }
 
     @Override
     public void update(userModel usr) {
         String sql = "update user set name=?, email=?, phone=? where id=?";
-        update(sql, new Object[]{usr.getName()}, new Object[]{usr.getEmail()}, new Object[]{usr.getPhone(), new Object[]{usr.getId()}});
+        List<Object> list = new ArrayList<>();
+        list.add(usr.getName());
+        list.add(usr.getEmail());
+        list.add(usr.getPhone());
+        list.add(usr.getId());
+        update(sql, list);
     }
 }

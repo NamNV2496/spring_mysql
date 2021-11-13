@@ -25,7 +25,7 @@ public class DBController {
     @GetMapping("/test_insert")
     public int test_insert() {
         usr.setId(6);
-        usr.setName("test_insert");
+        usr.setName("test_insertaa");
         usr.setPhone("09987894");
         usr.setEmail("test_inset@email.com");
         return iUserService.insert(usr);

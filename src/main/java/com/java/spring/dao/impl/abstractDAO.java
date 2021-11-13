@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class abstractDAO<T> implements IGenericDAO<T> {
@@ -14,7 +15,7 @@ public class abstractDAO<T> implements IGenericDAO<T> {
     private Environment env;
 
     @Override
-    public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters) {
+    public <T> List<T> query(String sql, RowMapper<T> rowMapper, List<Object> list) {
         List<T> results = new ArrayList<>();
         Connection connection = null;
         PreparedStatement psStatemet = null;
@@ -22,7 +23,7 @@ public class abstractDAO<T> implements IGenericDAO<T> {
         try {
             connection = getConnection(); // create a connection
             psStatemet = connection.prepareStatement(sql); //Creates a PreparedStatement object for sending parameterized SQL statements to the database.
-            setParameter(psStatemet, parameters); // inset param of SQL command
+            setParameter(psStatemet, list); // inset param of SQL command
             resultSet = psStatemet.executeQuery(); // execute sql command and get result to resuleSet
             int count = 0;
             while (resultSet.next()) {
@@ -64,28 +65,28 @@ public class abstractDAO<T> implements IGenericDAO<T> {
 
     }
 
-    private void setParameter(PreparedStatement psStatemet, Object[] parameters) throws SQLException {
-        for (int i = 0; i<parameters.length; i++) {
-            Object param = parameters[i];
+    private void setParameter(PreparedStatement psStatemet, List<Object> parameters) throws SQLException {
+        for (int i = 0; i<parameters.size(); i++) {
+            Object param = parameters.get(i);
             System.out.println(String.format("setparam %d", i));
             if (param instanceof Integer) {
-                psStatemet.setInt(i, (Integer) param);
+                psStatemet.setInt(i+1, (Integer) param);
             } else if (param instanceof String) {
-                psStatemet.setString(i, (String) param);
+                psStatemet.setString(i+1, (String) param);
             }
         }
     }
 
 
     @Override
-    public void update(String sql, Object... parameters) {
+    public void update(String sql, List<Object> list) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             connection.setAutoCommit(false);    // turn off auto commit to keep transaction
             statement = connection.prepareStatement(sql);   //Creates a PreparedStatement object for sending parameterized SQL statements to the database.
-            setParameter(statement, parameters);            // inset param of SQL command
+            setParameter(statement, list);            // inset param of SQL command
             statement.executeUpdate();                      // execute SQL command
             connection.commit();                            // commit if query success
         } catch (SQLException e) {
@@ -111,17 +112,17 @@ public class abstractDAO<T> implements IGenericDAO<T> {
     }
 
     @Override
-    public int insert(String sql, Object... parameters) {
+    public int insert(String sql, List<Object> list) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            System.out.println(String.format("param length %d", parameters.length));
+            System.out.println(String.format("param length %d", list.size()));
             int id = 0;
             connection = getConnection();
             connection.setAutoCommit(false);        // turn off auto commit to keep transaction
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);//Creates a PreparedStatement object for sending parameterized SQL statements to the database.
-            setParameter(statement, parameters);    // inset param of SQL command
+            setParameter(statement, list);    // inset param of SQL command
             statement.executeUpdate();              // execute SQL command
             resultSet = statement.getGeneratedKeys();   // get key to check successfully of query command
             if (resultSet.next()) {
@@ -131,6 +132,7 @@ public class abstractDAO<T> implements IGenericDAO<T> {
             connection.commit();                  // commit if query success
             return id;
         } catch (SQLException e) {
+            e.printStackTrace();
             if (connection != null) {
                 try {
                     connection.rollback();          // rollback to all if query fail
@@ -165,7 +167,7 @@ public class abstractDAO<T> implements IGenericDAO<T> {
             int count = 0;
             connection = getConnection();
             statement = connection.prepareStatement(sql);
-            setParameter(statement, parameters);
+//            setParameter(statement, parameters);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 count = resultSet.getInt(1);

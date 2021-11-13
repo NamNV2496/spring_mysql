@@ -25,6 +25,6 @@ public class userService implements IUserService {
 
     @Override
     public void update(userModel usr) {
-
+        userDAO.update(usr);
     }
 }
