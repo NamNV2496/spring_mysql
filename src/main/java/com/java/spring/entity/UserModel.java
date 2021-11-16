@@ -1,7 +1,4 @@
-package com.java.spring.model;
-
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.stereotype.Repository;
+package com.java.spring.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +6,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "user")
 public class UserModel implements Serializable {
+
     @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -59,5 +57,15 @@ public class UserModel implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 }
